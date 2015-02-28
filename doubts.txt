@@ -1,0 +1,23 @@
+[] what is tcp stream
+[] why do we use select statement if we want many clients to talk to a server ?
+[] what happens when we chose a tcp/udp port which is already occupied by some protocol. why do we choose 9999
+[] difference between existing socket and listening socket.
+
+
+[]what is present in data segment of llc packet ?
+
+[]what is the main use of cgi ? we implemented a server and client even without cgi.
+[] what is a https pareser ?
+
+
+
+[] what is EXACTLY a deamon ?
+ 
+
+[] what is lo or loopback in /etc/network/interfaces
+
+[] what happens when you choose an used port ?
+
+[] what is a lock file, certificate file ?
+
+[] 
