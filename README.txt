@@ -1,14 +1,3 @@
-################################################################################
-# README                                                                       #
-#                                                                              #
-# Description: This file serves as a README and documentation for CP1 starter. #
-#                                                                              #
-# Authors: Athula Balachandran <abalacha@cs.cmu.edu>,                          #
-#          Wolf Richter <wolf@cs.cmu.edu>                                      #
-#                                                                              #
-################################################################################
-
-
 
 
 [TOC-1] Table of Contents

@@ -1,0 +1,133 @@
+################################################################################
+# TESTS                                                                        #
+#                                                                              #
+# Description: This file describes the test methods for Liso                   #
+#                                                                              #
+# Authors: Ming Fang <mingf@cs.cmu.edu>,                                       #
+#                                                                              #
+################################################################################
+
+
+
+[TOC-1] Table of Contents
+--------------------------------------------------------------------------------
+
+        [TOC-1] Table of Contents
+        [CKP-1] Description of Test Cases for Checkpoint 1
+        [CKP-2] Description of Test Cases for Checkpoint 2
+        [CKP-3] Description of Test Cases for Checkpoint 3
+
+
+[CKP-1] Description of Test Cases for Checkpoint 1
+--------------------------------------------------------------------------------
+
+1. Test for single echo client
+I use the echo_client to test signle echo functionality
+
+Open two terminals and excute the following command in the first terminal
+Note that I implemented all 8 arugments but only the first one, the HTTP port, is
+working.
+
+                   ./lisod 9999 <HTTPS port> <log file> \
+      				<lock file> <www folder> <CGI script path> \ 
+      				<private key file> <certificate file>
+
+And the following command on the other terminal
+
+                   ./echo_client 127.0.0.1 9999
+
+After this, I should be able to type any characters on the stdin and get the exact
+characters echoed back on stdout.
+
+
+2. Test for concurrent echo clients
+I use the the python script to test concurrent echo functionality
+
+Open two terminals and excute the following command in the first terminal
+                   
+                   ./lisod 9999 <HTTPS port> <log file> \
+      				<lock file> <www folder> <CGI script path> \ 
+      				<private key file> <certificate file>
+
+And the following command on the other terminal
+
+                   ./cp1_checker 127.0.0.1 9999 1000 10 2048 500
+
+By using the python script, I could be able set up arbitrary number of trails 
+and connections as well as the max bytes to test for each echo. I used the script
+in different arguments.
+
+
+3. Test for random errors
+I use the the python script to test this
+
+Open two terminals and excute the following command in the first terminal
+                   
+                   ./lisod 9999 <HTTPS port> <log file> \
+      				<lock file> <www folder> <CGI script path> \ 
+      				<private key file> <certificate file>
+
+And the following command on the other terminal
+
+                   ./cp1_checker 127.0.0.1 9999 2000 500 20 500
+
+I repeatedly excute the above python scprit several times, each time I randomly send
+Ctrl + C to the shell that is excuting the script to see if the server crash.
+
+
+
+[CKP-2] Description of Test Cases for Checkpoint 2
+--------------------------------------------------------------------------------
+
+1. Test for single valid request
+Telnet to Liso and send valid request
+
+2. Test for single invalid requests
+Telnet to Liso and send invalid requests including methods other than "GET", "POST", 
+"HEAD". HTTP version other than "HTTP/1.1", URIs that do not match any exsit files.
+
+3. Test for browser
+Request pages by using firefox and check if the pages successfully load and check if
+all headers of responses are correct.
+
+4. Test for huge file
+Doweload a file of 120MB by browser and check if its md5 matches the original file.
+
+5. Test for concurrency
+Using apache bench to perform 100,000 requests with concurrency level 1019.
+ab -k -n 1000000 -c 1019 -t 20 http://127.0.0.1:port/
+
+
+[CKP-3] Description of Test Cases for Checkpoint 3
+--------------------------------------------------------------------------------
+1. Test for method other than "GET", "HEAD", "POST"
+Telnet to Liso and send invalid request, Liso return 501 error
+
+2. Test for invalid content-length header
+Send POST without content-length, Liso return bad request
+Send POST with content-length that is not a valid number, Liso return bad request
+Send POST with content-length different than actual length of post body, Liso return bad request
+
+3. Test for connection: keep-alive
+Use apache bench with -k 
+Use python script sending a large number of GET and HEAD requests without calling recv.
+
+4. Test for TLS
+Use apache bench to visit https://domain:port/
+Use browser to visit https://domain:port/
+Use python script to send different TLS requests
+
+5. Test for cgi envirnoment variables
+Use cgi_dumper.py to dump the variables and make sure they are all right
+
+6. Test for blog
+Visit flaskr blog by browser in both http and https to test different functionalities:
+log in with correct username and password
+log in with incorrect username or password
+log out
+add new posts
+
+
+
+
+

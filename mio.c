@@ -1,5 +1,5 @@
-/** @file mio.c
- *  @brief The Ming I/O package
+/** @file mio.c                                                               
+ *  @brief The Ming I/O package 
  *         modified from 15213 to handle EPIPE and maintain states
  *         for each buff and also perform operation depending on http or https
  *  @author Ming Fang - mingf@cs.cmu.edu
@@ -8,9 +8,7 @@
 
 #include "mio.h"
 
-#include <openssl/bio.h>
-#include <openssl/ssl.h>
-#include <openssl/err.h>
+
 /** @brief Send n bytes to a socket or ssl
  *	@param fd the fd to send to
  *  @param ssl_context the ssl context to send to
@@ -20,10 +18,7 @@
  *	@return 0 on EOF
  *  @return the number of bytes sent
  */
-
-//SSL_library_init(void);
-//SSL_load_error_strings(void);
-ssize_t mio_sendn(int fd, SSL* ssl_context, char *ubuf, size_t n) {
+ssize_t mio_sendn(int fd, SSL *ssl_context, char *ubuf, size_t n) {	
     size_t nleft = n;
     ssize_t nsend;
     char *buf = ubuf;
@@ -45,7 +40,7 @@ ssize_t mio_sendn(int fd, SSL* ssl_context, char *ubuf, size_t n) {
 		nleft -= nsend;
 		buf += nsend;
 	    }
-	    return n;
+	    return n;    	
     }
 
     while (nleft > 0) {
@@ -76,14 +71,14 @@ ssize_t mio_sendn(int fd, SSL* ssl_context, char *ubuf, size_t n) {
  *  @return -1 on error
  *  @return other the number of bytes reqad
  */
-ssize_t mio_readn(int fd, SSL* ssl_context, char *buf, size_t n) {
+ssize_t mio_readn(int fd, SSL *ssl_context, char *buf, size_t n) {
 	size_t res = 0;
 	ssize_t nread;
 	size_t nleft = n;
 
 	if (ssl_context != NULL) {
-		while (nleft > 0 && (nread = SSL_read(ssl_context,
-											  buf + res,
+		while (nleft > 0 && (nread = SSL_read(ssl_context, 
+											  buf + res, 
 											  nleft)) > 0) {
 			nleft -= nread;
 			res += nread;
@@ -96,7 +91,7 @@ ssize_t mio_readn(int fd, SSL* ssl_context, char *buf, size_t n) {
 				return -1;
 			}
 		}
-		return res;
+		return res;		
 	}
 	while (nleft > 0 && (nread = read(fd, buf + res, nleft)) > 0) {
 		nleft -= nread;
@@ -122,13 +117,13 @@ ssize_t mio_readn(int fd, SSL* ssl_context, char *buf, size_t n) {
  *	@return 0 on EOF
  *  @return the number of bytes read
  */
-ssize_t mio_recvlineb(int fd, SSL* ssl_context, void *usrbuf, size_t maxlen)
+ssize_t mio_recvlineb(int fd, SSL *ssl_context, void *usrbuf, size_t maxlen)
 {
     int n, rc;
     char c, *bufp = usrbuf;
 
     if (ssl_context != NULL) {
-	    for (n = 1; n < maxlen; n++) {
+	    for (n = 1; n < maxlen; n++) { 
 			if ((rc = SSL_read(ssl_context, &c, 1)) == 1) {
 			    *bufp++ = c;
 			    if (c == '\n')
@@ -148,7 +143,7 @@ ssize_t mio_recvlineb(int fd, SSL* ssl_context, void *usrbuf, size_t maxlen)
 	    return n;
     }
 
-    for (n = 1; n < maxlen; n++) {
+    for (n = 1; n < maxlen; n++) { 
 		if ((rc = recv(fd, &c, 1, 0)) == 1) {
 		    *bufp++ = c;
 		    if (c == '\n')

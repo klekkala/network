@@ -1,20 +1,48 @@
 ################################################################################
 # Makefile                                                                     #
 #                                                                              #
-# Description: This file contains the make rules for Recitation 1.             #
+# Description: This file contains the make rules for liso                      #
 #                                                                              #
-# Authors: Athula Balachandran <abalacha@cs.cmu.edu>,                          #
-#          Wolf Richter <wolf@cs.cmu.edu>                                      #
+# Authors: Ming Fang <mingf@cs.cmu.edu>,                                       #
 #                                                                              #
 ################################################################################
 
-default: echo_server echo_client
+CFLAGS = -Wall -g
+CC = gcc
+LDFLAGS = -lssl
 
-echo_server:
-	@gcc echo_server.c -o echo_server -Wall -Werror
+objects = loglib.o mio.o cgi.o lisod.o
 
-echo_client:
-	@gcc echo_client.c -o echo_client -Wall -Werror
+
+default: lisod
+
+.PHONY: default clean clobber handin
+
+lisod: $(objects)
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+lisod.o: lisod.c mio.h loglib.h cgi.h
+mio.o: mio.c mio.h
+cgi.o: cgi.c cgi.h mio.h
+loglib.o: loglib.c loglib.h mio.h
+loglib_test.o: loglib_test.c loglib.h mio.h
+
+%.o: %.c
+	$(CC) -c $(CFLAGS) -o $@ $<
+
+
+loglib_test: loglib_test.o loglib.o loglib.h mio.o mio.h
+	${CC} loglib.o loglib_test.o mio.o -o $@ $(LDFLAGS)
+
 
 clean:
-	@rm echo_server echo_client
+	rm -f  loglib.o mio.o lisod.o echo_client.o loglib_test.o lisod loglib_test echo_client log cgi.o liso_ssl.o *.tar
+
+clobber: clean
+	rm -f lisod
+
+handin:
+	(make clean; cd ..; tar cvf handin.tar 15-441-project-1 --exclude test --exclude cp1_checker.py --exclude README --exclude static_site --exclude dumper.py --exclude liso_prototype.py --exclude http_parser.h)
+
+
+
