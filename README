@@ -1,0 +1,5 @@
+node1.conf --- sample configuration file
+node1.files --- sample file list file
+webserver.py --- webserver code + skeletal code for the flask application with comments
+Usage: ./webserver.py <server-port>
+static folder --- containing index.html, style.css and image/liso_header.png. It also contains 4 files named by their sha256sum
